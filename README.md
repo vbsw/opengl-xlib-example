@@ -21,3 +21,5 @@ Packages
 
 ## References
 - <https://www.x.org/releases/X11R7.6/doc/libX11/specs/libX11/libX11.html>
+- <http://gcc.gnu.org/onlinedocs/gcc/Debugging-Options.html>
+
