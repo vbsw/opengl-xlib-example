@@ -59,12 +59,13 @@ static void process_event ( void ) {
 			close_window();
 		}
 
-	} else if ( xevent.type==Expose
-	         && xevent.xexpose.count==0 ) {
+	} else if ( xevent.type          == Expose
+	         && xevent.xexpose.count == 0 ) {
 
 		XGetWindowAttributes(display_ptr,window_id,&window_attributes);
 		draw_graphics(window_attributes.width,window_attributes.height);
 
+	/* close window */
 	} else if ( xevent.type                 == ClientMessage
 	         && xevent.xclient.message_type == wm_protocols
 	         && xevent.xclient.data.l[0]    == wm_delete_window_atom ) {
