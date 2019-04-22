@@ -36,5 +36,6 @@ Checkout other branches than master, for example the development branch:
 ## References
 - <https://www.x.org/releases/X11R7.7/doc/libX11/libX11/libX11.html>
 - <https://www.khronos.org/opengl/wiki/Programming_OpenGL_in_Linux:_GLX_and_Xlib>
+- <https://github.com/gamedevtech/X11OpenGLWindow>
 - <http://gcc.gnu.org/onlinedocs/gcc/Debugging-Options.html>
 
