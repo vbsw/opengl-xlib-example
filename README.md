@@ -38,5 +38,6 @@ Checkout other branches than master, for example the development branch:
 - <https://www.khronos.org/opengl/wiki/Programming_OpenGL_in_Linux:_GLX_and_Xlib>
 - <https://github.com/gamedevtech/X11OpenGLWindow>
 - <https://stackoverflow.com/questions/46862720/how-to-resize-a-window-programmatically-with-x11lib>
+- <https://www.lemoda.net/xlib/index.html>
 - <http://gcc.gnu.org/onlinedocs/gcc/Debugging-Options.html>
 
