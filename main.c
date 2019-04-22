@@ -11,13 +11,16 @@
 #include <GL/glx.h>
 
 
-static Display   *display_ptr   = NULL;
-static const int  window_width  = 256;
-static const int  window_height = 256;
+static const int  window_width_init  = 256;
+static const int  window_height_init = 256;
+static int        window_width       = 256;
+static int        window_height      = 256;
+
+static Display   *display_ptr        = NULL;
+static GLXContext glxContext         = NULL;
 static Window     window_id;
 static Atom       wm_protocols;
 static Atom       wm_delete_window_atom;
-static GLXContext glxContext    = NULL;
 
 static void close_window ( void ) {
 	XEvent close_event;
@@ -31,39 +34,56 @@ static void close_window ( void ) {
 	XSendEvent(display_ptr,window_id,False,NoEventMask,&close_event);
 }
 
-static void draw_graphics ( const int width, const int height ) {
-	glViewport(0,0,width,height);
+static void resize_frame () {
+	glViewport(0,0,window_width,window_height);
+}
+
+static void draw_graphics ( void ) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBegin(GL_TRIANGLES);
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex2i(0, 1);
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex2i(-1, -1);
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex2i(1, -1);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex2i(0, 1);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex2i(-1, -1);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex2i(1, -1);
 	glEnd();
 	glFlush();
 }
 
 static void process_event ( void ) {
 	XEvent xevent;
-	XWindowAttributes window_attributes;
-
 	XNextEvent(display_ptr,&xevent);
 
+	/* printf("event type %d\n", (int) xevent.type); */
+
+	/* input */
 	if (xevent.type==KeyPress) {
 
 		/* printf("key pressed %d\n", (int) xevent.xkey.keycode); */
+
 		/* ESC key */
 		if ((int) xevent.xkey.keycode == 9) {
 			close_window();
 		}
 
+	/* resize */
+	} else if ( xevent.type == ConfigureNotify ) {
+
+		if ( xevent.xconfigure.width  != window_width
+		  || xevent.xconfigure.height != window_height ) {
+
+			window_width  = xevent.xconfigure.width;
+			window_height = xevent.xconfigure.height;
+
+			resize_frame();
+		}
+
+	/* redraw */
 	} else if ( xevent.type          == Expose
 	         && xevent.xexpose.count == 0 ) {
 
-		XGetWindowAttributes(display_ptr,window_id,&window_attributes);
-		draw_graphics(window_attributes.width,window_attributes.height);
+		draw_graphics();
 
 	/* close window */
 	} else if ( xevent.type                 == ClientMessage
@@ -96,13 +116,13 @@ void create_window ( void ) {
 
 		Colormap colormap                = XCreateColormap(display_ptr,window_root_id,visual_info_ptr->visual,AllocNone);
 		set_window_attributes.colormap   = colormap;
-		set_window_attributes.event_mask = ExposureMask|KeyPressMask|SubstructureNotifyMask;
+		set_window_attributes.event_mask = ExposureMask|KeyPressMask|StructureNotifyMask;
 		window_id                        = XCreateWindow(display_ptr,
 		                                                 window_root_id,
 		                                                 0,
 		                                                 0,
-		                                                 window_width,
-		                                                 window_height,
+		                                                 window_width_init,
+		                                                 window_height_init,
 		                                                 0,
 		                                                 visual_info_ptr->depth,
 		                                                 InputOutput,
